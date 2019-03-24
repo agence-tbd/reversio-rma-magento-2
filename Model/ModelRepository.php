@@ -83,8 +83,8 @@ class ModelRepository
             $this->scopeConfig->getValue('reversio_rma/mapping/brand_attribute_code')
         );
 
-        return $attributeBrand && $attributeBrand->getId()
-            ? $attributeBrand->getFrontend()->getValue($product)
-            : \ReversIo\RMA\Helper\Constants::UNKNOWN_BRAND_NAME;
+        $brandName = $attributeBrand && $attributeBrand->getId() ? $attributeBrand->getFrontend()->getValue($product) : false;
+
+        return $brandName ? $brandName : \ReversIo\RMA\Helper\Constants::UNKNOWN_BRAND_NAME;
     }
 }
