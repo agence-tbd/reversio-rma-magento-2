@@ -1,0 +1,9 @@
+<button id="reversio-rma-create-signedinlink">Click RMA</button>
+<a id="reversio-rma-signedinlink" href="" target="_blank" style="display: none;"></a>
+<script type="text/x-magento-init">
+{
+    "#reversio-rma-create-signedinlink": {
+	"ReversIo_RMA/js/create-signedinlink": {"callback_url":"<?php echo $block->getUrl('reversio_rma/signedinlink/create', ['order_id' => $this->getRequest()->getParam('order_id')]) ?>"}
+    }
+}
+</script>

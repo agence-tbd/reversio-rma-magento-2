@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
+    <system>
+        <section id="reversio_rma" translate="label" type="text" sortOrder="200" showInDefault="1" showInWebsite="1" showInStore="1">
+            <label>ReversIo RMA</label>
+            <tab>sales</tab>
+            <resource>ReversIo_RMA::config</resource>
+            <group id="api" translate="label" type="text" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>API</label>
+                <field id="url" translate="label" type="text" sortOrder="5" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Url</label>
+                    <comment><![CDATA[Current API Urls are : Test : https://demo-customer-api.revers.io/api/v1/, Prod : https://customer-api.revers.io/api/v1/]]></comment>
+                </field>
+                <field id="subscription_key" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Subscription Key</label>
+                </field>
+                <field id="secret" translate="label" type="obscure" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Secret</label>
+                    <backend_model>Magento\Config\Model\Config\Backend\Encrypted</backend_model>
+                </field>
+            </group>
+            <group id="mapping" translate="label" sortOrder="2" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Mapping</label>
+                <field id="brand_attribute_code" translate="label" type="select" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Brand Attribute Code</label>
+                    <source_model>ReversIo\RMA\Model\Config\Source\BrandAttributeCode</source_model>
+                </field>
+                <field id="rma_eligible_order_state" translate="label" type="select" sortOrder="2" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>RMA Eligible Order State</label>
+                    <source_model>ReversIo\RMA\Model\Config\Source\RMAEligibleOrderState</source_model>
+                </field>
+            </group>
+        </section>
+    </system>
+</config>

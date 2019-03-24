@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <type name="ReversIo\RMA\Gateway\Client">
+        <arguments>
+            <argument name="logger" xsi:type="object">reversioRmaLogger</argument>
+        </arguments>
+    </type>
+    <virtualType name="reversioRmaLogger" type="Monolog\Logger">
+        <arguments>
+            <argument name="name" xsi:type="string">reversio_rma</argument>
+            <argument name="handlers"  xsi:type="array">
+                <item name="debug" xsi:type="object">ReversIo\RMA\Logger\Handler\Debug</item>
+            </argument>
+        </arguments>
+</virtualType>
+</config>

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Ui:etc/ui_configuration.xsd">
+    <fieldset name="reversio_rma" sortOrder="35">
+        <settings>
+            <collapsible>true</collapsible>
+            <label translate="true">ReversIo RMA</label>
+        </settings>
+        <field name="reversio_modeltype" sortOrder="30" formElement="select">
+            <argument name="data" xsi:type="array">
+                <item name="options" xsi:type="object">ReversIo\RMA\Model\Entity\Attribute\Source\ModelType</item>
+            </argument>
+            <settings>
+                <dataType>string</dataType>
+                <label translate="true">ReversIo ModelType</label>
+            </settings>
+        </field>
+    </fieldset>
+</form>
