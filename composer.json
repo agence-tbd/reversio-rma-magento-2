@@ -1,0 +1,21 @@
+{
+    "name": "reversio/module-rma",
+    "description": "N/A",
+    "type": "magento2-module",
+    "version": "1.0.0",
+    "authors" : [
+        {
+            "name" : "Matthieu BOUCHOT",
+            "email" : "matthieu.bouchot@agence-tbd.com",
+            "homepage" : "https://www.agence-tbd.com/"
+        }
+    ],
+    "autoload": {
+        "files": [
+            "registration.php"
+        ],
+        "psr-4": {
+            "ReversIo\\RMA\\": ""
+        }
+    }
+}
