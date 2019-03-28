@@ -1,8 +1,16 @@
-<button id="reversio-rma-create-signedinlink">Click RMA</button>
-<a id="reversio-rma-signedinlink" href="" target="_blank" style="display: none;"></a>
+<div class="block block-reversio-rma-create-signedinlink">
+    <div class="block-title">
+        <strong><?php echo __('Un problème avec votre commande ?') ?></strong>
+    </div>
+    <div class="block-content">
+        <span id="reversio-rma-create-signedinlink-label"><?php echo __('Retournez la très simplement en cliquant') ?></span>&nbsp;
+        <a id="reversio-rma-create-signedinlink-link" href="javascript:void(0);"><?php echo __('Ici') ?></a>
+    </div>
+</div>
+
 <script type="text/x-magento-init">
 {
-    "#reversio-rma-create-signedinlink": {
+    "#reversio-rma-create-signedinlink-link": {
 	"ReversIo_RMA/js/create-signedinlink": {"callback_url":"<?php echo $block->getUrl('reversio_rma/signedinlink/create', ['order_id' => $this->getRequest()->getParam('order_id')]) ?>"}
     }
 }

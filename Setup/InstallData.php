@@ -20,17 +20,21 @@ class InstallData implements InstallDataInterface
 
     protected $attributeSetFactory;
 
+    protected $resourceHelper;
+
     public function __construct(
         \Magento\Eav\Model\Entity\Attribute\SetFactory $attributeSetFactory,
         \Magento\Catalog\Model\ResourceModel\Eav\AttributeFactory $attributeFactory,
         \Magento\Eav\Setup\EavSetupFactory $eavSetupFactory,
-        \Magento\Eav\Model\Config $eavConfig
+        \Magento\Eav\Model\Config $eavConfig,
+        \ReversIo\RMA\Model\ResourceModel\Helper $resourceHelper
     )
     {
         $this->attributeSetFactory = $attributeSetFactory;
         $this->attributeFactory = $attributeFactory;
         $this->eavSetupFactory = $eavSetupFactory;
-        $this-> eavConfig =$eavConfig;
+        $this->eavConfig = $eavConfig;
+        $this->resourceHelper = $resourceHelper;
     }
 
 
@@ -98,6 +102,8 @@ class InstallData implements InstallDataInterface
         $eavSetup->addAttributeToGroup(
             \Magento\Catalog\Model\Category::ENTITY, $attributeSetId, $groupData['attribute_group_id'], $attributeData['attribute_id']
         );
+
+        $this->resourceHelper->initOrderReversIoSyncStatus(\ReversIo\RMA\Helper\Constants::REVERSIO_SYNC_STATUS_NOT_SYNC);
     }
 }
 

@@ -38,6 +38,10 @@ class BrandRepository
 
     public function saveBrand($brandName)
     {
+        if (empty($brandName)) {
+            throw new \Exception(__('Cannot save a brand with empty name.'));
+        }
+
         $brands = $this->getList();
 
         foreach ($brands as $brand) {

@@ -7,9 +7,16 @@
             <resource>ReversIo_RMA::config</resource>
             <group id="api" translate="label" type="text" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
                 <label>API</label>
-                <field id="url" translate="label" type="text" sortOrder="5" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>Url</label>
+                <field id="environment" translate="label" type="select" sortOrder="5" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Environment</label>
+                    <source_model>ReversIo\RMA\Model\Config\Source\Environment</source_model>
+                </field>
+                <field id="custom_url" translate="label" type="text" sortOrder="5" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Custom Url</label>
                     <comment><![CDATA[Current API Urls are : Test : https://demo-customer-api.revers.io/api/v1/, Prod : https://customer-api.revers.io/api/v1/]]></comment>
+                    <depends>
+                        <field id="environment">custom</field>
+                    </depends>
                 </field>
                 <field id="subscription_key" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Subscription Key</label>
@@ -18,6 +25,10 @@
                     <label>Secret</label>
                     <backend_model>Magento\Config\Model\Config\Backend\Encrypted</backend_model>
                 </field>
+                <field id="debug" translate="label" type="select" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Debug</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
             </group>
             <group id="mapping" translate="label" sortOrder="2" showInDefault="1" showInWebsite="1" showInStore="1">
                 <label>Mapping</label>
@@ -25,9 +36,13 @@
                     <label>Brand Attribute Code</label>
                     <source_model>ReversIo\RMA\Model\Config\Source\BrandAttributeCode</source_model>
                 </field>
-                <field id="rma_eligible_order_state" translate="label" type="select" sortOrder="2" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>RMA Eligible Order State</label>
-                    <source_model>ReversIo\RMA\Model\Config\Source\RMAEligibleOrderState</source_model>
+                <field id="rma_allowed_order_statuses" translate="label" type="multiselect" sortOrder="2" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>RMA Allowed Order Statuses</label>
+                    <source_model>ReversIo\RMA\Model\Config\Source\RMAAllowedOrderStatuses</source_model>
+                </field>
+                <field id="sync_order_start_date" translate="label" type="date" sortOrder="3" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Sync Order Start Date</label>
+                    <frontend_model>ReversIo\RMA\Block\Adminhtml\System\Config\Date</frontend_model>
                 </field>
             </group>
         </section>

@@ -27,7 +27,8 @@ class Create extends \Magento\Framework\App\Action\Action
     {
         $order = $this->magentoOrderRepository->get($this->getRequest()->getParam('order_id'));
 
-        if ($this->customerSession->getId() != $order->getCustomerId()) {
+        if (!$this->orderManagement->isOrderFromCustomer($order, $this->customerSession->getCustomerId()) 
+         || !$this->orderManagement->isOrderReturnable($order)) {
             throw new \Magento\Framework\Exception\NotFoundException(__('Page not found.'));
         }
 
@@ -38,6 +39,7 @@ class Create extends \Magento\Framework\App\Action\Action
             $result->setJsonData(json_encode(['link' => $link]));
         } catch (\Exception $e) {
             $result->setJsonData(json_encode(['error' => true, 'message' => $e->getMessage()]));
+            $this->messageManager->addErrorMessage(__($e->getMessage()));
         }
 
         return $result;

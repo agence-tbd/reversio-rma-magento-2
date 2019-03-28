@@ -60,6 +60,7 @@ class ImportOrder extends AbstractRequest
             'address' => $this->getAddress(),
             'purchaseDateUtc' => $this->order->getCreatedAt(),
             'products' => $this->getProducts(),
+            'shippingPrice' => $this->getShippingPrice(),
         ], $this->getCustomerData());
     }
 
@@ -73,10 +74,6 @@ class ImportOrder extends AbstractRequest
                     'modelId' => isset($this->modelIds[$item->getSku()]) ? $this->modelIds[$item->getSku()] : null,
                     'price' => [
                         'amount' => $item->getPriceInclTax() - ($item->getDiscountAmount() / $item->getQtyOrdered()),
-                        'currency' => $this->order->getBaseCurrencyCode(),
-                    ],
-                    'shippingPrice' => [
-                        'amount' => 0,
                         'currency' => $this->order->getBaseCurrencyCode(),
                     ],
                     'orderLineReference' => $item->getId(),
@@ -129,5 +126,13 @@ class ImportOrder extends AbstractRequest
         } else {
             return $this->order->getBillingAddress()->getTelephone();
         }
+    }
+    
+    public function getShippingPrice()
+    {
+        return  [
+            'amount' => $this->order->getBaseShippingAmount(),
+            'currency' => $this->order->getBaseCurrencyCode(),
+        ];
     }
 }

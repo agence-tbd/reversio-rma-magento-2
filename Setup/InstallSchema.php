@@ -28,7 +28,8 @@ class InstallSchema implements InstallSchemaInterface
                     'type' =>  \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
                     'length' => 255,
                     'comment' => 'ReversIo Sync Status',
-                    'nullable' => true,
+                    'nullable' => false,
+                    'default' => \ReversIo\RMA\Helper\Constants::REVERSIO_SYNC_STATUS_NOT_SYNC,
                 ]
             );
 

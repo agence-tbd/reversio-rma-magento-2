@@ -73,12 +73,29 @@ class Client
         $this->logger = $logger;
     }
 
-    protected function initRequest(\ReversIo\RMA\Gateway\Request\AbstractRequest $request, $skipToken = false)
+    protected function initRequest(\ReversIo\RMA\Gateway\Request\AbstractRequest $request)
     {
+        $apiUrl = null;
+        $environment = $this->scopeConfig->getValue('reversio_rma/api/environment');
+
+        switch ($environment) {
+            case \ReversIo\RMA\Helper\Constants::REVERSIO_ENVIRONMENT_TEST:
+                $apiUrl = \ReversIo\RMA\Helper\Constants::REVERSIO_TEST_API_URL;
+                break;
+            case \ReversIo\RMA\Helper\Constants::REVERSIO_ENVIRONMENT_PROD:
+                $apiUrl = \ReversIo\RMA\Helper\Constants::REVERSIO_PROD_API_URL;
+                break;
+            case \ReversIo\RMA\Helper\Constants::REVERSIO_ENVIRONMENT_CUSTOM:
+                $apiUrl = $this->scopeConfig->getValue('reversio_rma/api/custom_url');
+                break;
+            default:
+                break;
+        }
+
         $request->init(
-            $this->scopeConfig->getValue('reversio_rma/api/url'),
+            $apiUrl,
             $this->scopeConfig->getValue('reversio_rma/api/subscription_key'),
-            $skipToken ? null : $this->getToken()
+            $request instanceof \ReversIo\RMA\Gateway\Request\GetToken ? null : $this->getToken()
         );
 
         return $this;
@@ -118,24 +135,13 @@ class Client
             $response = $this->genericResponseFactory->create();
 
             try {
-                $response->fromGatewayResponse($this
-                    ->initRequest($request, true)
-                    ->sendRequest($request)
+                $token = $this->handleSendRequestAndEvalResponse($response, $request, 'getToken');
+                $this->cache->save(
+                    $token,
+                    \ReversIo\RMA\Helper\Constants::CACHE_KEY_REVERSIO_API_JWT_TOKEN,
+                    [\Magento\Config\App\Config\Type\System::CACHE_TAG],
+                    false
                 );
-
-                if (!$response->isSuccess()) {
-                    $this->logger->log(\Monolog\Logger::DEBUG, $request->__toString());
-                    $this->logger->log(\Monolog\Logger::DEBUG, $response->__toString());
-                    throw new \Exception('Cannot call Revers.io getToken service for reason : '. $response->getErrorMessage());
-                } else {
-                    $token = $response->getValue();
-                    $this->cache->save(
-                        $token,
-                        \ReversIo\RMA\Helper\Constants::CACHE_KEY_REVERSIO_API_JWT_TOKEN,
-                        [\Magento\Config\App\Config\Type\System::CACHE_TAG],
-                        false
-                    );
-                }
             } catch (\Exception $e) {
                 throw $e;
             }
@@ -150,18 +156,7 @@ class Client
         $response = $this->genericResponseFactory->create();
 
         try {
-            $response->fromGatewayResponse($this
-                ->initRequest($request)
-                ->sendRequest($request)
-            );
-
-            if (!$response->isSuccess()) {
-                $this->logger->log(\Monolog\Logger::DEBUG, $request->__toString());
-                $this->logger->log(\Monolog\Logger::DEBUG, $response->__toString());
-                throw new \Exception('Cannot call Revers.io retrieveModelTypes service for reason : '. $response->getErrorMessage());
-            } else {
-                $modelTypes = $response->getValue();
-            }
+            $modelTypes = $this->handleSendRequestAndEvalResponse($response, $request, 'retrieveModelTypes');
         } catch (\Exception $e) {
             throw $e;
         }
@@ -175,18 +170,7 @@ class Client
         $response = $this->genericResponseFactory->create();
 
         try {
-            $response->fromGatewayResponse($this
-                ->initRequest($request)
-                ->sendRequest($request)
-            );
-
-            if (!$response->isSuccess()) {
-                $this->logger->log(\Monolog\Logger::DEBUG, $request->__toString());
-                $this->logger->log(\Monolog\Logger::DEBUG, $response->__toString());
-                throw new \Exception('Cannot call Revers.io retrieveBrands service for reason : '. $response->getErrorMessage());
-            } else {
-                $brands = $response->getValue();
-            }
+            $brands = $this->handleSendRequestAndEvalResponse($response, $request, 'retrieveBrands');
         } catch (\Exception $e) {
             throw $e;
         }
@@ -201,18 +185,7 @@ class Client
         $response = $this->genericResponseFactory->create();
 
         try {
-            $response->fromGatewayResponse($this
-                ->initRequest($request)
-                ->sendRequest($request)
-            );
-
-            if (!$response->isSuccess()) {
-                $this->logger->log(\Monolog\Logger::DEBUG, $request->__toString());
-                $this->logger->log(\Monolog\Logger::DEBUG, $response->__toString());
-                throw new \Exception('Cannot call Revers.io createBrand service for reason : '. $response->getErrorMessage());
-            } else {
-                $brand = $response->getValue();
-            }
+            $brand = $this->handleSendRequestAndEvalResponse($response, $request, 'createBrand');
         } catch (\Exception $e) {
             throw $e;
         }
@@ -227,18 +200,7 @@ class Client
         $response = $this->genericResponseFactory->create();
 
         try {
-            $response->fromGatewayResponse($this
-                ->initRequest($request)
-                ->sendRequest($request)
-            );
-
-            if (!$response->isSuccess()) {
-                $this->logger->log(\Monolog\Logger::DEBUG, $request->__toString());
-                $this->logger->log(\Monolog\Logger::DEBUG, $response->__toString());
-                throw new \Exception('Cannot call Revers.io updateBrand service for reason : '. $response->getErrorMessage());
-            } else {
-                $brand = $response->getValue();
-            }
+            $brand = $this->handleSendRequestAndEvalResponse($response, $request, 'updateBrand');
         } catch (\Exception $e) {
             throw $e;
         }
@@ -253,18 +215,7 @@ class Client
         $response = $this->genericResponseFactory->create();
 
         try {
-            $response->fromGatewayResponse($this
-                ->initRequest($request)
-                ->sendRequest($request)
-            );
-
-            if ($response->isSuccess()) {
-                $model = $response->getValue();
-            } else {
-                $this->logger->log(\Monolog\Logger::DEBUG, $request->__toString());
-                $this->logger->log(\Monolog\Logger::DEBUG, $response->__toString());
-                $model = null;
-            }
+            $model = $this->handleSendRequestAndEvalResponse($response, $request, 'retrieveModelBySKU');
         } catch (\Exception $e) {
             throw $e;
         }
@@ -281,18 +232,7 @@ class Client
         $response = $this->genericResponseFactory->create();
 
         try {
-            $response->fromGatewayResponse($this
-                ->initRequest($request)
-                ->sendRequest($request)
-            );
-
-            if (!$response->isSuccess()) {
-                $this->logger->log(\Monolog\Logger::DEBUG, $request->__toString());
-                $this->logger->log(\Monolog\Logger::DEBUG, $response->__toString());
-                throw new \Exception('Cannot call Revers.io createModel service for reason : '. $response->getErrorMessage());
-            } else {
-                $model = $response->getValue();
-            }
+            $model = $this->handleSendRequestAndEvalResponse($response, $request, 'createModel');
         } catch (\Exception $e) {
             throw $e;
         }
@@ -310,18 +250,7 @@ class Client
         $response = $this->genericResponseFactory->create();
 
         try {
-            $response->fromGatewayResponse($this
-                ->initRequest($request)
-                ->sendRequest($request)
-            );
-
-            if (!$response->isSuccess()) {
-                $this->logger->log(\Monolog\Logger::DEBUG, $request->__toString());
-                $this->logger->log(\Monolog\Logger::DEBUG, $response->__toString());
-                throw new \Exception('Cannot call Revers.io updateModel service for reason : '. $response->getErrorMessage());
-            } else {
-                $model = $response->getValue();
-            }
+            $model = $this->handleSendRequestAndEvalResponse($response, $request, 'updateModel');
         } catch (\Exception $e) {
             throw $e;
         }
@@ -338,18 +267,7 @@ class Client
         $response = $this->genericResponseFactory->create();
 
         try {
-            $response->fromGatewayResponse($this
-                ->initRequest($request)
-                ->sendRequest($request)
-            );
-
-            if (!$response->isSuccess()) {
-                $this->logger->log(\Monolog\Logger::DEBUG, $request->__toString());
-                $this->logger->log(\Monolog\Logger::DEBUG, $response->__toString());
-                throw new \Exception('Cannot call Revers.io importOrder service for reason : '. $response->getErrorMessage());
-            } else {
-                $orderId = $response->getValue();
-            }
+            $orderId = $this->handleSendRequestAndEvalResponse($response, $request, 'importOrder');
         } catch (\Exception $e) {
             throw $e;
         }
@@ -364,18 +282,7 @@ class Client
         $response = $this->genericResponseFactory->create();
 
         try {
-            $response->fromGatewayResponse($this
-                ->initRequest($request)
-                ->sendRequest($request)
-            );
-
-            if ($response->isSuccess()) {
-                $order = $response->getValue();
-            } else {
-                $this->logger->log(\Monolog\Logger::DEBUG, $request->__toString());
-                $this->logger->log(\Monolog\Logger::DEBUG, $response->__toString());
-                $order = null;
-            }
+            $order = $this->handleSendRequestAndEvalResponse($response, $request, 'retrieveOrder');
         } catch (\Exception $e) {
             throw $e;
         }
@@ -390,22 +297,38 @@ class Client
         $response = $this->genericResponseFactory->create();
 
         try {
-            $response->fromGatewayResponse($this
-                ->initRequest($request)
-                ->sendRequest($request)
-            );
-
-            if (!$response->isSuccess()) {
-                $this->logger->log(\Monolog\Logger::DEBUG, $request->__toString());
-                $this->logger->log(\Monolog\Logger::DEBUG, $response->__toString());
-                throw new \Exception('Cannot call Revers.io createSignedInLink service for reason : '. $response->getErrorMessage());
-            } else {
-                $link = $response->getValue();
-            }
+            $link = $this->handleSendRequestAndEvalResponse($response, $request, 'createSignedInLink');
         } catch (\Exception $e) {
             throw $e;
         }
 
         return $link;
+    }
+
+    protected function handleSendRequestAndEvalResponse(
+        \ReversIo\RMA\Gateway\Response\AbstractResponse $response,
+        \ReversIo\RMA\Gateway\Request\AbstractRequest $request,
+        $serviceName
+    )
+    {
+        $response->fromGatewayResponse($this
+            ->initRequest($request)
+            ->sendRequest($request)
+        );
+
+        if ($this->scopeConfig->getValue('reversio_rma/api/debug')) {
+            $this->logger->log(\Monolog\Logger::DEBUG, $request->__toString());
+            $this->logger->log(\Monolog\Logger::DEBUG, $response->__toString());
+        }
+
+        if (!$response->isSuccess()) {
+            if (!$this->scopeConfig->getValue('reversio_rma/api/debug')) {
+                $this->logger->log(\Monolog\Logger::DEBUG, $request->__toString());
+                $this->logger->log(\Monolog\Logger::DEBUG, $response->__toString());
+            }
+            throw new \Exception(__('Cannot call Revers.io %1 service for reason : %2', $serviceName, $response->getErrorMessage()));
+        } else {
+            return $response->getValue();
+        }
     }
 }

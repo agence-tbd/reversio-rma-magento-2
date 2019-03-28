@@ -36,6 +36,10 @@ class ModelTypeRepository
 
     public function getModelTypeByKey($modelTypeKey)
     {
+        if (empty($modelTypeKey)) {
+            return ['id' => null];
+        }
+
         $modelTypes = $this->getList();
 
         foreach ($modelTypes as $modelType) {
@@ -44,7 +48,7 @@ class ModelTypeRepository
             }
         }
 
-        return null;
+        return ['id' => null];
     }
 }
 
