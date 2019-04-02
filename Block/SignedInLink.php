@@ -25,7 +25,7 @@ class SignedInLink extends \Magento\Framework\View\Element\Template
 
     protected function _toHtml()
     {
-        $order = $this->magentoOrderRepository->get($this->getRequest()->getParam('order_id'));
+        $order = $this->magentoOrderRepository->get($this->getOrderId());
         
         if ($this->orderManagement->isOrderFromCustomer($order, $this->customerSession->getCustomerId())
          && $this->orderManagement->isOrderReturnable($order)) {
@@ -33,5 +33,10 @@ class SignedInLink extends \Magento\Framework\View\Element\Template
         } else {
             return '';
         }
+    }
+    
+    public function getOrderId()
+    {
+        return $this->getRequest()->getParam('order_id');
     }
 }
