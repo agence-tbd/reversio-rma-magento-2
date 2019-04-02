@@ -18,13 +18,19 @@ class ModelRepository
 
     protected $productCollectionFactory;
 
+    protected $imageFactory;
+
+    protected $appEmulation;
+
     public function __construct(
         \ReversIo\RMA\Gateway\Client $reversIoClient,
         \ReversIo\RMA\Model\ResourceModel\Product\CollectionFactory $productCollectionFactory,
         \ReversIo\RMA\Model\BrandRepository $brandRepository,
         \ReversIo\RMA\Model\ModelTypeRepository $modelTypeRepository,
         \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
-        \Magento\Catalog\Model\ResourceModel\Category\CollectionFactory $categoryCollectionFactory
+        \Magento\Catalog\Model\ResourceModel\Category\CollectionFactory $categoryCollectionFactory,
+        \Magento\Catalog\Helper\ImageFactory $imageFactory,
+        \Magento\Store\Model\App\Emulation $appEmulation
     )
     {
         $this->reversIoClient = $reversIoClient;
@@ -33,6 +39,8 @@ class ModelRepository
         $this->scopeConfig = $scopeConfig;
         $this->categoryCollectionFactory = $categoryCollectionFactory;
         $this->productCollectionFactory = $productCollectionFactory;
+        $this->imageFactory = $imageFactory;
+        $this->appEmulation = $appEmulation;
     }
 
     public function getModelIds()
@@ -52,6 +60,13 @@ class ModelRepository
             ->addStoreFilter($storeId)
             ->addAttributeToSelect('*')
             ->addCategoryIds();
+
+        $this->appEmulation->startEnvironmentEmulation($storeId, \Magento\Framework\App\Area::AREA_FRONTEND, true);
+        foreach ($productCollection as $product) {
+            var_dump($this->imageFactory->create()->init($product, 'cart_page_product_thumbnail')->getUrl());
+            $product->setReversioImageUrl($this->imageFactory->create()->init($product, 'cart_page_product_thumbnail')->getUrl());
+        }
+        $this->appEmulation->stopEnvironmentEmulation();
 
         foreach ($productCollection as $product) {
             $this->saveModel($product, $storeId);

@@ -57,16 +57,16 @@ abstract class SaveModel extends AbstractRequest
             'modelTypeId' => $this->modelTypeId,
             'label' => $this->product->getName(),
             'sKU' => $this->product->getSku(),
-            'eANs' => '', //TODO
+            'eANs' => [], // TODO
             'dimension' => [
                 'lengthInCm' => $this->helperUnitConverter->convertDimensionData($this->product->getData('ts_dimensions_length')),
                 'widthInCm' => $this->helperUnitConverter->convertDimensionData($this->product->getData('ts_dimensions_width')),
                 'heightInCm' => $this->helperUnitConverter->convertDimensionData($this->product->getData('ts_dimensions_height')),
             ],
-            'photoUrl' => '', // TODO
+            'photoUrl' => $this->product->getReversioImageUrl(),
             'additionalInformation'  => $this->getAdditionalInformation(),
             'state' => 'New',
-            'weight' => $this->helperUnitConverter->convertDimensionData($this->product->getWeight())
+            'weight' => $this->helperUnitConverter->convertWeightData($this->product->getWeight())
         ];
     }
 

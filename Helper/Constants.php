@@ -24,4 +24,6 @@ class Constants
     
     const REVERSIO_TEST_API_URL = 'https://demo-customer-api.revers.io/api/v1/';
     const REVERSIO_PROD_API_URL = 'https://customer-api.revers.io/api/v1/';
+    
+    const REVERSIO_STATE_NEW = 'New';
 }
