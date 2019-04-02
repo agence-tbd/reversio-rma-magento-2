@@ -96,7 +96,7 @@ class ModelRepository
                 try {
                     $model = $this->reversIoClient->updateModel($model['id'], $product, $brand['id'], $modelType['id']);
                 } catch (\Exception $e) {
-                    //TODO Log
+                    // TODO Log
                 }
             } else {
                 $model = $this->reversIoClient->createModel($product, $brand['id'], $modelType['id']);

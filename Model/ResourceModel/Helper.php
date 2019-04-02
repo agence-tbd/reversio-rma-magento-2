@@ -16,9 +16,9 @@ class Helper extends \Magento\Framework\DB\Helper\AbstractHelper
     {
         $connection = $this->getConnection();
 
-        $data = array(
+        $data = [
             'reversio_sync_status' => $syncStatus
-        );
+        ];
 
         $where['reversio_sync_status IS NULL'] = true;
         $connection->update($connection->getTableName('sales_order'), $data, $where);
@@ -30,10 +30,10 @@ class Helper extends \Magento\Framework\DB\Helper\AbstractHelper
     {
         $connection = $this->getConnection();
 
-        $data = array(
+        $data = [
             'updated_at' => (new \DateTime())->format(\Magento\Framework\Stdlib\DateTime::DATETIME_PHP_FORMAT),
             'reversio_sync_status' => $syncStatus
-        );
+        ];
 
         $where['entity_id = ?'] = $orderId;
         $connection->update($connection->getTableName('sales_order'), $data, $where);

@@ -12,16 +12,20 @@ class SyncOrder
 
     protected $batchSize;
 
+    protected $logger;
+
     public function __construct(
         \Magento\Sales\Model\ResourceModel\Order\CollectionFactory $orderCollectionFactory,
         \ReversIo\RMA\Model\OrderManagement $orderManagement,
         \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
+        \Psr\Log\LoggerInterface $logger,
         $batchSize = 25
     ) {
         $this->orderCollectionFactory = $orderCollectionFactory;
         $this->orderManagement = $orderManagement;
         $this->scopeConfig = $scopeConfig;
         $this->batchSize = $batchSize;
+        $this->logger = $logger;
     }
 
     public function execute()
@@ -43,7 +47,7 @@ class SyncOrder
                 try {
                     $this->orderManagement->syncOrder($order);
                 } catch (\Exception $e) {
-                    echo $e->__toString();
+                    $this->logger->critical($e);
                 }
             }
         }
