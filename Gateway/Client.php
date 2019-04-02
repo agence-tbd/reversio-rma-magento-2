@@ -53,8 +53,7 @@ class Client
         \ReversIo\RMA\Gateway\Request\ImportOrderFactory $importOrderRequestFactory,
         \ReversIo\RMA\Gateway\Request\RetrieveOrderFactory $retrieveOrderRequestFactory,
         \ReversIo\RMA\Gateway\Request\CreateSignedInLinkFactory $createSignedInLinkRequestFactory
-    )
-    {
+    ) {
         $this->scopeConfig = $scopeConfig;
         $this->encryptor = $encryptor;
         $this->cache = $cache;
@@ -258,8 +257,11 @@ class Client
         return $model;
     }
 
-    public function importOrder(\Magento\Sales\Model\Order $order, \Magento\Customer\Model\Customer $customer, $modelIds)
-    {
+    public function importOrder(
+        \Magento\Sales\Model\Order $order,
+        \Magento\Customer\Model\Customer $customer,
+        $modelIds
+    ) {
         $request = $this->importOrderRequestFactory->create()
             ->setOrder($order)
             ->setCustomer($customer)
@@ -309,12 +311,10 @@ class Client
         \ReversIo\RMA\Gateway\Response\AbstractResponse $response,
         \ReversIo\RMA\Gateway\Request\AbstractRequest $request,
         $serviceName
-    )
-    {
+    ) {
         $response->fromGatewayResponse($this
             ->initRequest($request)
-            ->sendRequest($request)
-        );
+            ->sendRequest($request));
 
         if ($this->scopeConfig->getValue('reversio_rma/api/debug')) {
             $this->logger->log(\Monolog\Logger::DEBUG, $request->__toString());
@@ -326,7 +326,9 @@ class Client
                 $this->logger->log(\Monolog\Logger::DEBUG, $request->__toString());
                 $this->logger->log(\Monolog\Logger::DEBUG, $response->__toString());
             }
-            throw new \Exception(__('Cannot call Revers.io %1 service for reason : %2', $serviceName, $response->getErrorMessage()));
+            throw new \Exception(
+                __('Cannot call Revers.io %1 service for reason : %2', $serviceName, $response->getErrorMessage())
+            );
         } else {
             return $response->getValue();
         }

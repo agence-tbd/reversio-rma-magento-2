@@ -9,8 +9,7 @@ class ModelTypeRepository
     public function __construct(
         \ReversIo\RMA\Gateway\Client $reversIoClient,
         \Magento\Framework\App\CacheInterface $cache
-    )
-    {
+    ) {
         $this->reversIoClient = $reversIoClient;
         $this->cache = $cache;
     }
@@ -51,4 +50,3 @@ class ModelTypeRepository
         return ['id' => null];
     }
 }
-

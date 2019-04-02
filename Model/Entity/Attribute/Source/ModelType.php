@@ -8,8 +8,7 @@ class ModelType extends \Magento\Eav\Model\Entity\Attribute\Source\AbstractSourc
 
     public function __construct(
         \ReversIo\RMA\Model\ModelTypeRepository $modelTypeRepository
-    )
-    {
+    ) {
         $this->modelTypeRepository = $modelTypeRepository;
     }
 
@@ -26,7 +25,7 @@ class ModelType extends \Magento\Eav\Model\Entity\Attribute\Source\AbstractSourc
             foreach ($modelTypes as $modelType) {
                 $this->_options[] = ['value' => $modelType['key'], 'label' => $modelType['label']];
             }
-            usort($this->_options, function($a, $b){
+            usort($this->_options, function ($a, $b) {
                 if ($a['label'] == $b['label']) {
                     return 0;
                 }

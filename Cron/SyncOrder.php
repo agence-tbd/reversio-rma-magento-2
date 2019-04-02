@@ -17,8 +17,7 @@ class SyncOrder
         \ReversIo\RMA\Model\OrderManagement $orderManagement,
         \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
         $batchSize = 25
-    )
-    {
+    ) {
         $this->orderCollectionFactory = $orderCollectionFactory;
         $this->orderManagement = $orderManagement;
         $this->scopeConfig = $scopeConfig;
@@ -29,12 +28,14 @@ class SyncOrder
     {
         $orderCollection = $this->orderCollectionFactory->create()
             ->addFieldToFilter('reversio_sync_status', ['in' => [
-                \ReversIo\RMA\Helper\Constants::REVERSIO_SYNC_STATUS_SYNC_ERROR, \ReversIo\RMA\Helper\Constants::REVERSIO_SYNC_STATUS_NOT_SYNC
+                \ReversIo\RMA\Helper\Constants::REVERSIO_SYNC_STATUS_SYNC_ERROR,
+                \ReversIo\RMA\Helper\Constants::REVERSIO_SYNC_STATUS_NOT_SYNC
             ]])
             ->setPageSize($this->batchSize);
 
-        if ($this->scopeConfig->getValue('reversio_rma/mapping/sync_order_start_date')) {
-            $orderCollection->addFieldToFilter('created_at', ['gteq' => $this->scopeConfig->getValue('reversio_rma/mapping/sync_order_start_date')]);
+        $syncOrderStartDate = $this->scopeConfig->getValue('reversio_rma/mapping/sync_order_start_date');
+        if ($syncOrderStartDate) {
+            $orderCollection->addFieldToFilter('created_at', ['gteq' => $syncOrderStartDate]);
         }
 
         foreach ($orderCollection as $order) {

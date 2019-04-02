@@ -22,16 +22,16 @@ class InstallSchema implements InstallSchemaInterface
         $installer->startSetup();
 
         $table = $setup->getConnection()->addColumn(
-                $setup->getTable('sales_order'), 
-                'reversio_sync_status', 
-                [
+            $setup->getTable('sales_order'),
+            'reversio_sync_status',
+            [
                     'type' =>  \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
                     'length' => 255,
                     'comment' => 'ReversIo Sync Status',
                     'nullable' => false,
                     'default' => \ReversIo\RMA\Helper\Constants::REVERSIO_SYNC_STATUS_NOT_SYNC,
                 ]
-            );
+        );
 
         $installer->endSetup();
     }

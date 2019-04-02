@@ -17,8 +17,7 @@ abstract class SaveModel extends AbstractRequest
     public function __construct(
         \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
         \ReversIo\RMA\Helper\UnitConverter $helperUnitConverter
-    )
-    {
+    ) {
         $this->scopeConfig = $scopeConfig;
         $this->helperUnitConverter = $helperUnitConverter;
     }
@@ -59,14 +58,22 @@ abstract class SaveModel extends AbstractRequest
             'sKU' => $this->product->getSku(),
             'eANs' => [], // TODO
             'dimension' => [
-                'lengthInCm' => $this->helperUnitConverter->convertDimensionData($this->product->getData('ts_dimensions_length')),
-                'widthInCm' => $this->helperUnitConverter->convertDimensionData($this->product->getData('ts_dimensions_width')),
-                'heightInCm' => $this->helperUnitConverter->convertDimensionData($this->product->getData('ts_dimensions_height')),
+                'lengthInCm' => $this->helperUnitConverter->convertDimensionData(
+                    $this->product->getData('ts_dimensions_length')
+                ),
+                'widthInCm' => $this->helperUnitConverter->convertDimensionData(
+                    $this->product->getData('ts_dimensions_width')
+                ),
+                'heightInCm' => $this->helperUnitConverter->convertDimensionData(
+                    $this->product->getData('ts_dimensions_height')
+                ),
             ],
             'photoUrl' => $this->product->getReversioImageUrl(),
             'additionalInformation'  => $this->getAdditionalInformation(),
             'state' => 'New',
-            'weight' => $this->helperUnitConverter->convertWeightData($this->product->getWeight())
+            'weight' => $this->helperUnitConverter->convertWeightData(
+                $this->product->getWeight()
+            )
         ];
     }
 

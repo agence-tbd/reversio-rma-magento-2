@@ -11,4 +11,3 @@ class Date extends \Magento\Config\Block\System\Config\Form\Field
         return parent::render($element);
     }
 }
-

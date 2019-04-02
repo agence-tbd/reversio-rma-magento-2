@@ -7,8 +7,7 @@ class Helper extends \Magento\Framework\DB\Helper\AbstractHelper
     public function __construct(
         \Magento\Framework\App\ResourceConnection $resource,
         $modulePrefix = \Magento\Framework\App\ResourceConnection::DEFAULT_CONNECTION
-    )
-    {
+    ) {
         $this->_resource = $resource;
         $this->_modulePrefix = (string)$modulePrefix;
     }
@@ -47,5 +46,4 @@ class Helper extends \Magento\Framework\DB\Helper\AbstractHelper
         $value = $this->escapeLikeValue($value, $options);
         return new \Zend_Db_Expr($this->getConnection()->quote($value));
     }
-
 }

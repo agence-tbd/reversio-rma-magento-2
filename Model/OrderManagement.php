@@ -20,8 +20,7 @@ class OrderManagement
         \Magento\Customer\Model\ResourceModel\Customer\CollectionFactory $customerCollectionFactory,
         \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
         \ReversIo\RMA\Model\ResourceModel\Helper $resourceHelper
-    )
-    {
+    ) {
         $this->modelRepository = $modelRepository;
         $this->reversIoClient = $reversIoClient;
         $this->customerCollectionFactory = $customerCollectionFactory;
@@ -46,25 +45,29 @@ class OrderManagement
     {
         try {
             $skus = array_map(
-                function($item) {
+                function ($item) {
                     return $item->getSku();
-                }, 
+                },
                 $order->getAllVisibleItems()
             );
 
             $this->modelRepository->saveModelsBySkus($skus, $order->getStoreId());
 
             $result = $this->reversIoClient->importOrder(
-                $order, $this->getCustomerFromOrder($order), $this->modelRepository->getModelIds()
+                $order,
+                $this->getCustomerFromOrder($order),
+                $this->modelRepository->getModelIds()
             );
 
             $this->resourceHelper->updateOrderReversIoSyncStatus(
-                $order->getId(), \ReversIo\RMA\Helper\Constants::REVERSIO_SYNC_STATUS_SYNC_SUCCESS
+                $order->getId(),
+                \ReversIo\RMA\Helper\Constants::REVERSIO_SYNC_STATUS_SYNC_SUCCESS
             );
             return $result;
         } catch (\Exception $e) {
             $this->resourceHelper->updateOrderReversIoSyncStatus(
-                $order->getId(), \ReversIo\RMA\Helper\Constants::REVERSIO_SYNC_STATUS_SYNC_ERROR
+                $order->getId(),
+                \ReversIo\RMA\Helper\Constants::REVERSIO_SYNC_STATUS_SYNC_ERROR
             );
             throw $e;
         }
@@ -80,7 +83,7 @@ class OrderManagement
             // MEANS ORDER DOES NOT EXISTS OR ISSUES WHEN CONNECT TO REVERSIO
         }
 
-        if(empty($gatewayOrder)) {
+        if (empty($gatewayOrder)) {
             $gatewayOrder = [
                 'orderId' => $this->syncOrder($order)
             ];
@@ -111,4 +114,3 @@ class OrderManagement
         return $customerId == $order->getCustomerId();
     }
 }
-

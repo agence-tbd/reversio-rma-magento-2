@@ -15,8 +15,8 @@ class SignedInLink extends \Magento\Framework\View\Element\Template
         \ReversIo\RMA\Model\OrderManagement $orderManagement,
         \Magento\Sales\Model\OrderRepository $magentoOrderRepository,
         \Magento\Customer\Model\Session $customerSession,
-        array $data = [])
-    {
+        array $data = []
+    ) {
         parent::__construct($context, $data);
         $this->orderManagement = $orderManagement;
         $this->magentoOrderRepository = $magentoOrderRepository;
@@ -27,7 +27,7 @@ class SignedInLink extends \Magento\Framework\View\Element\Template
     {
         $order = $this->magentoOrderRepository->get($this->getRequest()->getParam('order_id'));
         
-        if ($this->orderManagement->isOrderFromCustomer($order, $this->customerSession->getCustomerId()) 
+        if ($this->orderManagement->isOrderFromCustomer($order, $this->customerSession->getCustomerId())
          && $this->orderManagement->isOrderReturnable($order)) {
             return parent::_toHtml();
         } else {

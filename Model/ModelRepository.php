@@ -31,8 +31,7 @@ class ModelRepository
         \Magento\Catalog\Model\ResourceModel\Category\CollectionFactory $categoryCollectionFactory,
         \Magento\Catalog\Helper\ImageFactory $imageFactory,
         \Magento\Store\Model\App\Emulation $appEmulation
-    )
-    {
+    ) {
         $this->reversIoClient = $reversIoClient;
         $this->brandRepository = $brandRepository;
         $this->modelTypeRepository = $modelTypeRepository;
@@ -63,8 +62,9 @@ class ModelRepository
 
         $this->appEmulation->startEnvironmentEmulation($storeId, \Magento\Framework\App\Area::AREA_FRONTEND, true);
         foreach ($productCollection as $product) {
-            var_dump($this->imageFactory->create()->init($product, 'cart_page_product_thumbnail')->getUrl());
-            $product->setReversioImageUrl($this->imageFactory->create()->init($product, 'cart_page_product_thumbnail')->getUrl());
+            $product->setReversioImageUrl(
+                $this->imageFactory->create()->init($product, 'cart_page_product_thumbnail')->getUrl()
+            );
         }
         $this->appEmulation->stopEnvironmentEmulation();
 
@@ -95,7 +95,7 @@ class ModelRepository
             if (!empty($model)) {
                 try {
                     $model = $this->reversIoClient->updateModel($model['id'], $product, $brand['id'], $modelType['id']);
-                } catch(\Exception $e) {
+                } catch (\Exception $e) {
                     //TODO Log
                 }
             } else {

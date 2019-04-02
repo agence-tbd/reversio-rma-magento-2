@@ -11,8 +11,7 @@ class BrandAttributeCode implements \Magento\Framework\Option\ArrayInterface
     public function __construct(
         \Magento\Eav\Model\Config $eavConfig,
         \Magento\Eav\Model\ResourceModel\Entity\Attribute\CollectionFactory $attributeCollectionFactory
-    )
-    {
+    ) {
         $this->eavConfig = $eavConfig;
         $this->attributeCollectionFactory = $attributeCollectionFactory;
     }
@@ -21,9 +20,10 @@ class BrandAttributeCode implements \Magento\Framework\Option\ArrayInterface
     {
         $result = [];
 
+        $productEntityTypeId = $this->eavConfig->getEntityType(\Magento\Catalog\Model\Product::ENTITY)->getId();
         $attributeCollection = $this->attributeCollectionFactory->create()
-                ->addFieldToFilter('frontend_input', ['in' => ['select']])
-                ->addFieldToFilter('entity_type_id', $this->eavConfig->getEntityType(\Magento\Catalog\Model\Product::ENTITY)->getId());
+            ->addFieldToFilter('frontend_input', ['in' => ['select']])
+            ->addFieldToFilter('entity_type_id', $productEntityTypeId);
 
         foreach ($attributeCollection as $attribute) {
             $result[] = ['value' => $attribute->getAttributeCode(), 'label' => $attribute->getAttributeCode()];
@@ -33,4 +33,3 @@ class BrandAttributeCode implements \Magento\Framework\Option\ArrayInterface
         return $result;
     }
 }
-

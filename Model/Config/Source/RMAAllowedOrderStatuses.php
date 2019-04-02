@@ -8,8 +8,7 @@ class RMAAllowedOrderStatuses implements \Magento\Framework\Option\ArrayInterfac
 
     public function __construct(
         \Magento\Sales\Model\Order\Config $orderConfig
-    )
-    {
+    ) {
         $this->orderConfig = $orderConfig;
     }
 
@@ -24,4 +23,3 @@ class RMAAllowedOrderStatuses implements \Magento\Framework\Option\ArrayInterfac
         return $result;
     }
 }
-

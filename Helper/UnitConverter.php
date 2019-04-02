@@ -8,8 +8,7 @@ class UnitConverter
 
     public function __construct(
         \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig
-    )
-    {
+    ) {
         $this->scopeConfig = $scopeConfig;
     }
 
@@ -32,4 +31,3 @@ class UnitConverter
         }
     }
 }
-

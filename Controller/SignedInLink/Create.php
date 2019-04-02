@@ -15,8 +15,7 @@ class Create extends \Magento\Framework\App\Action\Action
         \Magento\Customer\Model\Session $customerSession,
         \Magento\Sales\Model\OrderRepository $magentoOrderRepository,
         \ReversIo\RMA\Model\OrderManagement $orderManagement
-    )
-    {
+    ) {
         parent::__construct($context);
         $this->customerSession = $customerSession;
         $this->magentoOrderRepository = $magentoOrderRepository;
@@ -27,7 +26,7 @@ class Create extends \Magento\Framework\App\Action\Action
     {
         $order = $this->magentoOrderRepository->get($this->getRequest()->getParam('order_id'));
 
-        if (!$this->orderManagement->isOrderFromCustomer($order, $this->customerSession->getCustomerId()) 
+        if (!$this->orderManagement->isOrderFromCustomer($order, $this->customerSession->getCustomerId())
          || !$this->orderManagement->isOrderReturnable($order)) {
             throw new \Magento\Framework\Exception\NotFoundException(__('Page not found.'));
         }

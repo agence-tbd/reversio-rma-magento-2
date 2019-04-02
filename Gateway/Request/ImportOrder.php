@@ -105,7 +105,9 @@ class ImportOrder extends AbstractRequest
     
     public function getAddress()
     {
-        $address = $this->order->getShippingAddress() ? $this->order->getShippingAddress() : $this->order->getBillingAddress();
+        $address = $this->order->getShippingAddress()
+            ? $this->order->getShippingAddress()
+            : $this->order->getBillingAddress();
         
         return [
             'companyName' => '',
