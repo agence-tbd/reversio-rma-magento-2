@@ -6,10 +6,14 @@ class ModelType extends \Magento\Eav\Model\Entity\Attribute\Source\AbstractSourc
 {
     protected $modelTypeRepository;
 
+    protected $removeAccentsFilter;
+
     public function __construct(
-        \ReversIo\RMA\Model\ModelTypeRepository $modelTypeRepository
+        \ReversIo\RMA\Model\ModelTypeRepository $modelTypeRepository,
+        \Magento\Framework\Filter\RemoveAccents $removeAccentsFilter
     ) {
         $this->modelTypeRepository = $modelTypeRepository;
+        $this->removeAccentsFilter = $removeAccentsFilter;
     }
 
     public function getAllOptions()
@@ -26,6 +30,8 @@ class ModelType extends \Magento\Eav\Model\Entity\Attribute\Source\AbstractSourc
                 $this->_options[] = ['value' => $modelType['key'], 'label' => $modelType['label']];
             }
             usort($this->_options, function ($a, $b) {
+                $a['label'] = $this->removeAccentsFilter->filter($a['label']);
+                $b['label'] = $this->removeAccentsFilter->filter($b['label']);
                 if ($a['label'] == $b['label']) {
                     return 0;
                 }
