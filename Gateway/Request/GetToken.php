@@ -26,4 +26,9 @@ class GetToken extends AbstractRequest
     {
         return ['secret' => $this->secret];
     }
+
+    public function needToken()
+    {
+        return false;
+    }
 }

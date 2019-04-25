@@ -50,6 +50,11 @@ abstract class AbstractRequest
         return $this->storedData;
     }
     
+    public function needToken()
+    {
+        return true;
+    }
+    
     public function getGatewayRequest()
     {
         $headers = new \Zend\Http\Headers();
@@ -59,7 +64,7 @@ abstract class AbstractRequest
            'Content-Type' => 'application/json'
         ]);
 
-        if ($this->token) {
+        if ($this->needToken()) {
             $headers->addHeaders([
                 'Authorization' => 'Bearer '.$this->token,
             ]);

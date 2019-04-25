@@ -94,7 +94,7 @@ class Client
         $request->init(
             $apiUrl,
             $this->scopeConfig->getValue('reversio_rma/api/subscription_key'),
-            $request instanceof \ReversIo\RMA\Gateway\Request\GetToken ? null : $this->getToken()
+            $request->needToken() ? $this->getToken() : null
         );
 
         return $this;
@@ -133,17 +133,13 @@ class Client
                 ->setSecret($this->encryptor->decrypt($this->scopeConfig->getValue('reversio_rma/api/secret')));
             $response = $this->genericResponseFactory->create();
 
-            try {
-                $token = $this->handleSendRequestAndEvalResponse($response, $request, 'getToken');
-                $this->cache->save(
-                    $token,
-                    \ReversIo\RMA\Helper\Constants::CACHE_KEY_REVERSIO_API_JWT_TOKEN,
-                    [\Magento\Config\App\Config\Type\System::CACHE_TAG],
-                    false
-                );
-            } catch (\Exception $e) {
-                throw $e;
-            }
+            $token = $this->handleSendRequestAndEvalResponse($request, $response, 'getToken');
+            $this->cache->save(
+                $token,
+                \ReversIo\RMA\Helper\Constants::CACHE_KEY_REVERSIO_API_JWT_TOKEN,
+                [\Magento\Config\App\Config\Type\System::CACHE_TAG],
+                false
+            );
         }
 
         return $token;
@@ -154,11 +150,7 @@ class Client
         $request = $this->retrieveModelTypesRequestFactory->create();
         $response = $this->genericResponseFactory->create();
 
-        try {
-            $modelTypes = $this->handleSendRequestAndEvalResponse($response, $request, 'retrieveModelTypes');
-        } catch (\Exception $e) {
-            throw $e;
-        }
+        $modelTypes = $this->handleSendRequestAndEvalResponse($request, $response, 'retrieveModelTypes');
 
         return $modelTypes;
     }
@@ -168,11 +160,7 @@ class Client
         $request = $this->retrieveBrandsRequestFactory->create();
         $response = $this->genericResponseFactory->create();
 
-        try {
-            $brands = $this->handleSendRequestAndEvalResponse($response, $request, 'retrieveBrands');
-        } catch (\Exception $e) {
-            throw $e;
-        }
+        $brands = $this->handleSendRequestAndEvalResponse($request, $response, 'retrieveBrands');
 
         return $brands;
     }
@@ -183,11 +171,7 @@ class Client
             ->setBrandName($brandName);
         $response = $this->genericResponseFactory->create();
 
-        try {
-            $brand = $this->handleSendRequestAndEvalResponse($response, $request, 'createBrand');
-        } catch (\Exception $e) {
-            throw $e;
-        }
+        $brand = $this->handleSendRequestAndEvalResponse($request, $response, 'createBrand');
 
         return $brand;
     }
@@ -198,11 +182,7 @@ class Client
             ->setBrandName($brandName);
         $response = $this->genericResponseFactory->create();
 
-        try {
-            $brand = $this->handleSendRequestAndEvalResponse($response, $request, 'updateBrand');
-        } catch (\Exception $e) {
-            throw $e;
-        }
+        $brand = $this->handleSendRequestAndEvalResponse($request, $response, 'updateBrand');
 
         return $brand;
     }
@@ -213,11 +193,7 @@ class Client
             ->setSku($sku);
         $response = $this->genericResponseFactory->create();
 
-        try {
-            $model = $this->handleSendRequestAndEvalResponse($response, $request, 'retrieveModelBySKU');
-        } catch (\Exception $e) {
-            throw $e;
-        }
+        $model = $this->handleSendRequestAndEvalResponse($request, $response, 'retrieveModelBySKU');
 
         return $model;
     }
@@ -230,11 +206,7 @@ class Client
             ->setModelTypeId($modelTypeId);
         $response = $this->genericResponseFactory->create();
 
-        try {
-            $model = $this->handleSendRequestAndEvalResponse($response, $request, 'createModel');
-        } catch (\Exception $e) {
-            throw $e;
-        }
+        $model = $this->handleSendRequestAndEvalResponse($request, $response, 'createModel');
 
         return $model;
     }
@@ -248,11 +220,7 @@ class Client
             ->setModelTypeId($modelTypeId);
         $response = $this->genericResponseFactory->create();
 
-        try {
-            $model = $this->handleSendRequestAndEvalResponse($response, $request, 'updateModel');
-        } catch (\Exception $e) {
-            throw $e;
-        }
+        $model = $this->handleSendRequestAndEvalResponse($request, $response, 'updateModel');
 
         return $model;
     }
@@ -268,11 +236,7 @@ class Client
             ->setModelIds($modelIds);
         $response = $this->genericResponseFactory->create();
 
-        try {
-            $orderId = $this->handleSendRequestAndEvalResponse($response, $request, 'importOrder');
-        } catch (\Exception $e) {
-            throw $e;
-        }
+        $orderId = $this->handleSendRequestAndEvalResponse($request, $response, 'importOrder');
 
         return $orderId;
     }
@@ -283,11 +247,7 @@ class Client
             ->setOrderReference($orderReference);
         $response = $this->genericResponseFactory->create();
 
-        try {
-            $order = $this->handleSendRequestAndEvalResponse($response, $request, 'retrieveOrder');
-        } catch (\Exception $e) {
-            throw $e;
-        }
+        $order = $this->handleSendRequestAndEvalResponse($request, $response, 'retrieveOrder');
 
         return $order;
     }
@@ -298,18 +258,14 @@ class Client
             ->setOrderId($orderId);
         $response = $this->genericResponseFactory->create();
 
-        try {
-            $link = $this->handleSendRequestAndEvalResponse($response, $request, 'createSignedInLink');
-        } catch (\Exception $e) {
-            throw $e;
-        }
+        $link = $this->handleSendRequestAndEvalResponse($request, $response, 'createSignedInLink');
 
         return $link;
     }
 
     protected function handleSendRequestAndEvalResponse(
-        \ReversIo\RMA\Gateway\Response\AbstractResponse $response,
         \ReversIo\RMA\Gateway\Request\AbstractRequest $request,
+        \ReversIo\RMA\Gateway\Response\AbstractResponse $response,
         $serviceName
     ) {
         $response->fromGatewayResponse($this

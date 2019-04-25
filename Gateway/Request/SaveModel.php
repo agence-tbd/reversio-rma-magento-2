@@ -57,17 +57,7 @@ abstract class SaveModel extends AbstractRequest
             'label' => $this->product->getName(),
             'sKU' => $this->product->getSku(),
             'eANs' => [], // TODO
-            'dimension' => [
-                'lengthInCm' => $this->helperUnitConverter->convertDimensionData(
-                    $this->product->getData('ts_dimensions_length')
-                ),
-                'widthInCm' => $this->helperUnitConverter->convertDimensionData(
-                    $this->product->getData('ts_dimensions_width')
-                ),
-                'heightInCm' => $this->helperUnitConverter->convertDimensionData(
-                    $this->product->getData('ts_dimensions_height')
-                ),
-            ],
+            'dimension' => $this->getDimension(),
             'photoUrl' => $this->product->getReversioImageUrl(),
             'additionalInformation'  => $this->getAdditionalInformation(),
             'state' => 'New',
@@ -87,6 +77,21 @@ abstract class SaveModel extends AbstractRequest
             'isSerializable' => true,
             'isOnSiteInterventionPossible' => true,
             'isCumbersome' => true,
+        ];
+    }
+    
+    public function getDimension()
+    {
+        return [
+            'lengthInCm' => $this->helperUnitConverter->convertDimensionData(
+                $this->product->getData('ts_dimensions_length')
+            ),
+            'widthInCm' => $this->helperUnitConverter->convertDimensionData(
+                $this->product->getData('ts_dimensions_width')
+            ),
+            'heightInCm' => $this->helperUnitConverter->convertDimensionData(
+                $this->product->getData('ts_dimensions_height')
+            ),
         ];
     }
 }
