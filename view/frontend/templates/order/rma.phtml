@@ -11,7 +11,7 @@
 <script type="text/x-magento-init">
 {
     "#reversio-rma-create-signedinlink-link": {
-        "ReversIo_RMA/js/create-signedinlink": {"callback_url":"<?php echo $block->getUrl('reversio_rma/signedinlink/create', ['order_id' => $block->getOrderId()]) ?>"}
+        "ReversIo_RMA/js/create-signedinlink": {"callback_url":"<?php echo $block->getUrl('reversio_rma/signedinlink/create', ['order_id' => $block->escapeHtml($block->getOrderId())]) ?>"}
     }
 }
 </script>

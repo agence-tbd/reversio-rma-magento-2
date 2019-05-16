@@ -73,7 +73,7 @@ class OrderManagement
         }
     }
 
-    public function createSignedInLink(\Magento\Sales\Model\Order $order)
+    public function createSignedInLinkFacade(\Magento\Sales\Model\Order $order)
     {
         $gatewayOrder = null;
 

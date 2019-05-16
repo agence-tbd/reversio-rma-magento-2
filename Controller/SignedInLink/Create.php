@@ -34,7 +34,7 @@ class Create extends \Magento\Framework\App\Action\Action
         $result = $this->resultFactory->create(\Magento\Framework\Controller\ResultFactory::TYPE_JSON);
 
         try {
-            $link = $this->orderManagement->createSignedInLink($order);
+            $link = $this->orderManagement->createSignedInLinkFacade($order);
             $result->setJsonData(json_encode(['link' => $link]));
         } catch (\Exception $e) {
             $result->setJsonData(json_encode(['error' => true, 'message' => $e->getMessage()]));
