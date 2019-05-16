@@ -61,9 +61,7 @@ abstract class SaveModel extends AbstractRequest
             'photoUrl' => $this->product->getReversioImageUrl(),
             'additionalInformation'  => $this->getAdditionalInformation(),
             'state' => 'New',
-            'weight' => $this->helperUnitConverter->convertWeightData(
-                $this->product->getWeight()
-            )
+            'weight' => $this->getWeight(),
         ];
     }
 
@@ -79,7 +77,7 @@ abstract class SaveModel extends AbstractRequest
             'isCumbersome' => true,
         ];
     }
-    
+
     public function getDimension()
     {
         return [
@@ -93,5 +91,12 @@ abstract class SaveModel extends AbstractRequest
                 $this->product->getData('ts_dimensions_height')
             ),
         ];
+    }
+
+    public function getWeight()
+    {
+        return $this->helperUnitConverter->convertWeightData(
+            $this->product->getWeight()
+        );
     }
 }
