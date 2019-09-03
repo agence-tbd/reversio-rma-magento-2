@@ -1,10 +1,18 @@
+<?php
+$buttonLabel = $block->getButtonLabel();
+$messageLabel = $block->getMessageLabel();
+?>
+
 <div class="block block-reversio-rma-create-signedinlink">
     <div class="block-title">
-        <strong><?php echo __('Un problème avec votre commande ?') ?></strong>
+        <strong><?php echo __('Returns') ?></strong>
     </div>
     <div class="block-content">
-        <span id="reversio-rma-create-signedinlink-label"><?php echo __('Retournez la très simplement en cliquant') ?></span>&nbsp;
-        <button id="reversio-rma-create-signedinlink-link" class="action primary" type="button"><span><?php echo __('Ici') ?></span></button>
+        <div id="reversio-rma-create-signedinlink-label"><?php echo $messageLabel ?></div>
+        <?php if ($buttonLabel) : ?>
+        <br/>
+        <button id="reversio-rma-create-signedinlink-link" class="action primary" type="button"><span><?php echo strtoupper($buttonLabel) ?></span></button>
+        <?php endif; ?>
     </div>
 </div>
 

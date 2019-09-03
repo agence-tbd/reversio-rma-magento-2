@@ -14,6 +14,8 @@ class OrderManagement
 
     protected $resourceHelper;
 
+    protected $syncOrders;
+
     public function __construct(
         \ReversIo\RMA\Model\ModelRepository $modelRepository,
         \ReversIo\RMA\Gateway\Client $reversIoClient,
@@ -26,6 +28,7 @@ class OrderManagement
         $this->customerCollectionFactory = $customerCollectionFactory;
         $this->scopeConfig = $scopeConfig;
         $this->resourceHelper = $resourceHelper;
+        $this->syncOrders = [];
     }
 
     protected function getCustomerFromOrder(\Magento\Sales\Model\Order $order)
@@ -75,21 +78,15 @@ class OrderManagement
 
     public function createSignedInLinkFacade(\Magento\Sales\Model\Order $order)
     {
-        $gatewayOrder = null;
+        $syncOrder = $this->retrieveSyncOrder($order);
 
-        try {
-            $gatewayOrder = $this->reversIoClient->retrieveOrder($order->getIncrementId());
-        } catch (\Exception $ex) {
-            // MEANS ORDER DOES NOT EXISTS OR ISSUES WHEN CONNECT TO REVERSIO
-        }
-
-        if (empty($gatewayOrder)) {
-            $gatewayOrder = [
+        if (empty($syncOrder)) {
+            $syncOrder = [
                 'orderId' => $this->syncOrder($order)
             ];
         }
 
-        return $this->reversIoClient->createSignedInLink($gatewayOrder['orderId']);
+        return $this->reversIoClient->createSignedInLink($syncOrder['orderId']);
     }
 
     public function isOrderReturnable(\Magento\Sales\Model\Order $order)
@@ -112,5 +109,46 @@ class OrderManagement
     public function isOrderFromCustomer(\Magento\Sales\Model\Order $order, $customerId)
     {
         return $customerId == $order->getCustomerId();
+    }
+
+    public function retrieveSyncOrder(\Magento\Sales\Model\Order $order)
+    {
+        if (!array_key_exists($order->getIncrementId(), $this->syncOrders)) {
+            $this->syncOrders[$order->getIncrementId()] = null;
+
+            try {
+                $this->syncOrders[$order->getIncrementId()] = $this->reversIoClient->retrieveOrder($order->getIncrementId());
+            } catch (\Exception $ex) {
+                // MEANS ORDER DOES NOT EXISTS OR ISSUES WHEN CONNECT TO REVERSIO
+            }
+        }
+
+        return $this->syncOrders[$order->getIncrementId()];
+    }
+    
+    public function hasSyncOrderOpenFiles($syncOrder)
+    {
+        $orderLines = $syncOrder['orderLines'];
+
+        foreach($orderLines as $orderLine) {
+            if ($orderLine['hasOpenFile'] == true) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public function isSyncOrderOpenForClaims($syncOrder)
+    {
+        $orderLines = $syncOrder['orderLines'];
+
+        foreach($orderLines as $orderLine) {
+            if ($orderLine['isOpenForClaims'] == true) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
