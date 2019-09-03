@@ -92,7 +92,7 @@ abstract class AbstractRequest
     protected function getServiceUri()
     {
         $serviceUri = $this->apiUri.$this->getServiceEndpoint();
-        return $this->getId() ? str_replace('{id}', $this->getId(), $serviceUri) : $serviceUri;
+        return $this->getId() ? str_replace('{id}', urlencode($this->getId()), $serviceUri) : $serviceUri;
     }
 
     public function __toString()
